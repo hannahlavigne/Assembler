@@ -60,7 +60,7 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
     fprintf(Log, "00000000000000000000");
     fprintf(Log, pPR->Funct);
   }
-  else if (strcmp(pPR->Mnemonic, "sub") == 0){
+  else if (strcmp(pPR->Mnemonic, "srav") == 0){
     fprintf(Log, pPR->Opcode);
     fprintf(Log, pPR->RT);
     fprintf(Log, pPR->RS);
@@ -74,6 +74,7 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
    strcmp(pPR->Mnemonic, "add") == 0 ||
    strcmp(pPR->Mnemonic, "nor") == 0 ||
    strcmp(pPR->Mnemonic, "slt") == 0 ||
+   strcmp(pPR->Mnemonic, "sub") == 0 ||
    strcmp(pPR->Mnemonic, "addu") == 0){
      fprintf(Log, pPR->Opcode);
      fprintf(Log, pPR->RS);
@@ -95,7 +96,9 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
   strcmp(pPR->Mnemonic, "sw") == 0 ||
   strcmp(pPR->Mnemonic, "addiu") == 0 ||
   strcmp(pPR->Mnemonic, "blez") == 0 ||
-  strcmp(pPR->Mnemonic, "li") == 0) {
+  strcmp(pPR->Mnemonic, "bgtz") == 0 ||
+  strcmp(pPR->Mnemonic, "li") == 0 ||
+  strcmp(pPR->Mnemonic, "sw") == 0) {
     fprintf(Log, pPR->Opcode);
     fprintf(Log, pPR->RS);
     fprintf(Log, pPR->RT);

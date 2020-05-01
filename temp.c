@@ -345,7 +345,7 @@ int main(int num, char** args) {
 					}
 					else {
 						char* pch = strtok(line, " \t:.");
-						pch = strtok(NULL, x" \t:.");
+						pch = strtok(NULL, " \t:.");
 						pch = strtok(NULL, " \t:.");
 						char* temp = calloc(33, sizeof(char));
 						strcpy(temp, pch);
