@@ -1,6 +1,6 @@
 #include "opHelp.h"
 
-#define NUMOP 24
+#define NUMOP 25
 
 //Stores Opcodes
 static OpCode OpcodeTable[NUMOP] = {
@@ -27,13 +27,14 @@ static OpCode OpcodeTable[NUMOP] = {
   {"000000", "srav"},
   {"000110", "blez"},
   {"000111", "bgtz"},
-  {"000010", "j"}
+  {"000010", "j"},
+  {"001001", "li"}
 
 };
 
 //Gets the opcode from the table
 const OpCode* OpcodeHelper(const char* const opcode){
-  for (int i = 0; i < 24; i++){
+  for (int i = 0; i < 25; i++){
     if(strcmp(opcode, OpcodeTable[i].opName) == 0){
       return &OpcodeTable[i];
     }

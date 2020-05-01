@@ -1,7 +1,10 @@
 #include "ASMParser.h"
-#include "ParseResult.h"
 #include "main.h"
+#include "ParseResult.h"
 
+/**
+ * Main runner for Assembler. It will read from a file and print outF to another file.
+ */
 int main(int num, char** args) {
 	if (num == 4) {
 		FILE* input = fopen(args[2], "r");
@@ -212,10 +215,11 @@ int main(int num, char** args) {
 			fprintf(output2, temp);
 			fprintf(output2, "\n");
 			}
-			else if ((strstr(line2, "blt") != NULL && strstr(line2, "bltz") == NULL)
+			else if ((strstr(line2, "blt") != NULL)
 					|| (strstr(line2, "ble") != NULL && strstr(line2, "blez") == NULL)) {
 				number = number + 8;
 			}
+
 			else if (line2[0] == '\n' ||
 					 strstr(line2, "#") != NULL) {
 				// do nothing number not increase
@@ -254,28 +258,28 @@ int main(int num, char** args) {
 		char* templine = calloc(strlen(line) + 1, sizeof(char));
 		strcpy(templine, line);
 		char* pch = strtok(templine, " \t,");
-		if (strcmp(pch, "ble") == 0) {
-			char* reg1 = strtok(NULL, "\t, ");
-			char* reg2 = strtok(NULL, "\t, ");
-			char* label = strtok(NULL, "\t, ");
-			char* ins1 = calloc(50, sizeof(char));
-			char* ins2 = calloc(50, sizeof(char));
-			sprintf(ins1, "slt  $at, %s, %s", reg2, reg1);
-			sprintf(ins2, "beq  $at, $zero, %s", label);
-			result = parseASM(ins1, current);
-			printResult(output, result);
-			current++;
-			clearResult(result);
-			free(result);
-			result = parseASM(ins2, current);
-			printResult(output, result);
-			current++;
-			clearResult(result);
-			free(result);
-			free(ins1);
-			free(ins2);
-		}
-		else if (strcmp(pch, "blt") == 0) {
+		//if (strcmp(pch, "ble") == 0) {
+			//char* reg1 = strtok(NULL, "\t, ");
+			//char* reg2 = strtok(NULL, "\t, ");
+			//char* label = strtok(NULL, "\t, ");
+			//char* ins1 = calloc(50, sizeof(char));
+			//char* ins2 = calloc(50, sizeof(char));
+			//sprintf(ins1, "slt  $at, %s, %s", reg2, reg1);
+			//sprintf(ins2, "beq  $at, $zero, %s", label);
+			//result = parseASM(ins1, current);
+			//printResult(output, result);
+			//current++;
+			//clearResult(result);
+			//free(result);
+			//result = parseASM(ins2, current);
+			//printResult(output, result);
+			//current++;
+			//clearResult(result);
+			//free(result);
+			//free(ins1);
+			//free(ins2);
+		//}
+		if (strcmp(pch, "blt") == 0) {
 			char* reg1 = strtok(NULL, "\t, ");
 			char* reg2 = strtok(NULL, "\t, ");
 			char* label = strtok(NULL, "\t, ");
@@ -295,6 +299,28 @@ int main(int num, char** args) {
 			free(result);
 			free(ins1);
 			free(ins2);
+		}
+		else if (strcmp(pch, "move") == 0) {
+			char* reg1 = strtok(NULL, "\t, ");
+			char* reg2 = strtok(NULL, "\t, ");
+			//char* label = strtok(NULL, "\t, ");
+			char* ins1 = calloc(50, sizeof(char));
+			//char* ins2 = calloc(50, sizeof(char));
+			//sprintf(ins1, "slt  $at, %s, %s", reg2, reg1);
+			//sprintf(ins2, "beq  $at, $zero, %s", label);
+			sprintf(ins1, "addu  %s, $zero, %s", reg2, reg1);
+			result = parseASM(ins1, current);
+			printResult(output, result);
+			current++;
+			clearResult(result);
+			free(result);
+			//result = parseASM(ins2, current);
+			//printResult(output, result);
+			//current++;
+			//clearResult(result);
+			//free(result);
+			free(ins1);
+			//free(ins2);
 		}
 
 		else {
@@ -345,7 +371,7 @@ int main(int num, char** args) {
 					}
 					else {
 						char* pch = strtok(line, " \t:.");
-						pch = strtok(NULL, x" \t:.");
+						pch = strtok(NULL, " \t:.");
 						pch = strtok(NULL, " \t:.");
 						char* temp = calloc(33, sizeof(char));
 						strcpy(temp, pch);
