@@ -9,6 +9,7 @@ int main(int num, char** args) {
 		int bytes = 0;
 		int number;
 	char line2[100];
+	if (input != NULL){
 	fgets(line2, 100, input);
 
 		while (line2[0] == '#' ||
@@ -115,11 +116,12 @@ int main(int num, char** args) {
 		fclose(output2);
 		fclose(input);
 	}
+	}
 	else {
 	FILE* input = fopen(args[1], "r");
 	FILE* output = fopen(args[2], "w");
 	FILE* output2 = fopen("symbol.txt", "w");
-
+	if (input != NULL){
 	// symbol
 	int bytes = 0;
 	int number;
@@ -219,7 +221,7 @@ int main(int num, char** args) {
 			else if (line2[0] == '\n' ||
 					 strstr(line2, "#") != NULL) {
 				// do nothing number not increase
-			}
+			}			pos
 			else {
 				number = number + 4;
 			}
@@ -335,7 +337,6 @@ int main(int num, char** args) {
 						data = strtok(NULL, " .\t:,");
 						while (data != NULL) {
 							int n = atoi(data);
-
 							char* f = helper(32, n);
 							fprintf(output, f);
 							fprintf(output, "\n");
@@ -406,4 +407,21 @@ int main(int num, char** args) {
 	fclose(output);
 	return 0;
 }
+}
+}
+
+
+if (strstr(lineArray, ",") != NULL) {
+	char* tempData = strtok(lineArray, " .\t:,");
+	for (int i = 0; i < 2; i++){
+		tempData = strtok(NULL, " .\t:,");
+	}
+	while (tempData != NULL) {
+		int n = atoi(tempData);
+		char* f = helper(32, n);
+		fprintf(out, f);
+		fprintf(out, "\n");
+		free(f);
+		tempData = strtok(NULL, " .\t:,");
+	}
 }

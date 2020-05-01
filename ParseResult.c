@@ -54,6 +54,7 @@ void clearResult(ParseResult* const pPR) {
  *         pPR points to a proper ParseResult object.
  */
 void printResult(FILE* Log, const ParseResult* const pPR) {
+  
   // Prints out syscall instruction
   if (strcmp(pPR->Mnemonic, "syscall") == 0) {
     fprintf(Log, pPR->Opcode);
@@ -69,8 +70,7 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
     fprintf(Log, pPR->Funct);
   }
   // Prints out sub, mul, add, nor instructions
-  else if (
-   strcmp(pPR->Mnemonic, "mul") == 0 ||
+  else if (strcmp(pPR->Mnemonic, "mul") == 0 ||
    strcmp(pPR->Mnemonic, "add") == 0 ||
    strcmp(pPR->Mnemonic, "nor") == 0 ||
    strcmp(pPR->Mnemonic, "slt") == 0 ||
@@ -83,26 +83,54 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
      fprintf(Log, "00000");
      fprintf(Log, pPR->Funct);
    }
+   else if (strcmp(pPR->Mnemonic, "move") == 0){
+     fprintf(Log, pPR->Opcode);
+     fprintf(Log, pPR->RS);
+     fprintf(Log, pPR->RT);
+     fprintf(Log, pPR->IMM);
+     fprintf(Log, "1111111111110101");
+     fprintf(Log, "move");
+   }
    // Prints out lw, lui, addi, slti,
    // la, beq, bne, sw, addiu, blez,
    // and li instructions
-  else if (strcmp(pPR->Mnemonic, "lw") == 0 ||
-  strcmp(pPR->Mnemonic, "lui") == 0 ||
-  strcmp(pPR->Mnemonic, "addi") == 0 ||
-  strcmp(pPR->Mnemonic, "slti") == 0 ||
+  else if (strcmp(pPR->Mnemonic, "lui") == 0){
+    fprintf(Log, pPR->Opcode);
+    fprintf(Log, pPR->RS);
+    fprintf(Log, pPR->RT);
+    fprintf(Log, pPR->IMM);
+  }
+  else if (strcmp(pPR->Mnemonic, "addi") == 0){
+    fprintf(Log, pPR->Opcode);
+    fprintf(Log, pPR->RS);
+    fprintf(Log, pPR->RT);
+    fprintf(Log, pPR->IMM);
+  }
+  else if (strcmp(pPR->Mnemonic, "slti") == 0 ||
   strcmp(pPR->Mnemonic, "la") == 0 ||
   strcmp(pPR->Mnemonic, "beq") == 0 ||
   strcmp(pPR->Mnemonic, "bne") == 0 ||
   strcmp(pPR->Mnemonic, "sw") == 0 ||
   strcmp(pPR->Mnemonic, "addiu") == 0 ||
   strcmp(pPR->Mnemonic, "blez") == 0 ||
-  strcmp(pPR->Mnemonic, "bgtz") == 0 ||
-  strcmp(pPR->Mnemonic, "li") == 0 ||
-  strcmp(pPR->Mnemonic, "sw") == 0) {
+  strcmp(pPR->Mnemonic, "bgtz") == 0){
     fprintf(Log, pPR->Opcode);
     fprintf(Log, pPR->RS);
     fprintf(Log, pPR->RT);
     fprintf(Log, pPR->IMM);
+  }
+  else if (strcmp(pPR->Mnemonic, "li") == 0){
+    fprintf(Log, pPR->Opcode);
+    fprintf(Log, pPR->RS);
+    fprintf(Log, pPR->RT);
+    fprintf(Log, pPR->IMM);
+  }
+  else if (strcmp(pPR->Mnemonic, "lw") == 0) {
+    fprintf(Log, pPR->Opcode);
+    fprintf(Log, pPR->RS);
+    fprintf(Log, pPR->RT);
+    fprintf(Log, pPR->IMM);
+
 }
 // Print out mult instruction
 else if (strcmp(pPR->Mnemonic, "mult") == 0){
@@ -113,16 +141,8 @@ else if (strcmp(pPR->Mnemonic, "mult") == 0){
   fprintf(Log, pPR->Funct);
 }
 // Prints out sll and sra instructions
-else if (strcmp(pPR->Mnemonic, "sll") == 0){
-  fprintf(Log, pPR->Opcode);
-  fprintf(Log, "00000");
-  fprintf(Log, pPR->RT);
-  fprintf(Log, pPR->RD);
-  fprintf(Log, pPR->Shift);
-  fprintf(Log, pPR->Funct);
-}
-else if (strcmp(pPR->Mnemonic, "sra") == 0) {
-  fprintf(Log, "sra");
+else if (strcmp(pPR->Mnemonic, "sra") == 0 ||
+         strcmp(pPR->Mnemonic, "sll") == 0) {
 		fprintf(Log, pPR->Opcode);
 		fprintf(Log, pPR->RS);
 	   fprintf(Log, pPR->RT);

@@ -67,6 +67,33 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 				final->Imm = 0;
 				final->IMM = NULL;
 		}
+		else if (strcmp(final->Mnemonic, "move") == 0){
+			final->Opcode = calloc(10, sizeof(char));
+			strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
+			final->rsName = calloc(10, sizeof(char));
+			pos = strtok(NULL, " ,\t()");
+			strcpy(final->rsName, pos);
+			final->RS = calloc(10, sizeof(char));
+			strcpy(final->RS, RegistersHelper(final->rsName)->currReg);
+			final->RT = calloc(10, sizeof(char));
+			strcpy(final->RT, "00000");
+			final->IMM = calloc(110, sizeof(char));
+			pos = strtok(NULL, " ,\t()");
+			FILE* input = fopen("symbol.txt", "r");
+			char line[100];
+			while(fgets(line, 100, input) != NULL) {
+				if (strstr(line, pos) != NULL) {
+					char* lab = strtok(line, ":  ");
+					int n = (int)strtol(lab, NULL, 0);
+					int j = (n / 4) - currLine - 1;
+					char* f = helper(16, j);
+					strcpy(final->IMM, f);
+					free(f);
+				}
+			}
+			fclose(input);
+		}
+
 	// Handle the addi instruction
 	// Format: ADDI rt, rs, immediate
 	else if (strcmp(final->Mnemonic, "addi") == 0 ||
@@ -184,52 +211,44 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 	}
 	// Handle the lw instruction
 	// Format: LW rt, offset(base)
-    else if (strcmp(final->Mnemonic, "lw") == 0 ||
-						 strcmp(final->Mnemonic, "sw") == 0) {
-							 final->rdName = NULL;
-				 			final->rsName = calloc(7, sizeof(char));
-				 			final->rtName = calloc(7, sizeof(char));
-				 			final->IMM = calloc(17, sizeof(char));
-				 			pos = strtok(NULL, " ,\t()");
-				 			strcpy(final->rtName, pos);
-				 			pos = strtok(NULL, " ,\t()");
-				 			char* label = 	calloc(7, sizeof(char));
-				 			strcpy(label, pos);
-				 			pos = strtok(NULL, " ,\t()");
-				 			if (pos == NULL) {
-				 				strcpy(final->rsName, "$zero");
-				 				FILE* input = fopen("symbol.txt", "r");
-				 				char line[100];
-				 				while (fgets(line, 100, input) != NULL) {
-				 					if (strstr(line, label) != NULL) {
-				 						char* label = strtok(line, ":  ");
-				 						int number = (int)strtol(label, NULL, 0);
-				 						char* f = helper(16, number);
-				 						strcpy(final->IMM, f);
-				 						free(f);
-				 						break;
-				 					}
-				 				}
-				 				fclose(input);
-				 				free(label);
-				 			}
-				 			else {
-				 				strcpy(final->rsName, pos);
-				 				int number = atoi(label);
-				 				char* f = helper(16, number);
-				 				strcpy(final->IMM, f);
-				 				free(f);
-				 				free(label);
-				 			}
-				 			final->Opcode = calloc(7, sizeof(char));
-				 			final->RS = calloc(6, sizeof(char));
-				 			final->RT = calloc(6, sizeof(char));
-				 			strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
-				 			strcpy(final->RS, RegistersHelper(final->rsName)->currReg);
-				 			strcpy(final->RT, RegistersHelper(final->rtName)->currReg);
+  else if (strcmp(final->Mnemonic, "lw") == 0 || strcmp(final->Mnemonic, "sw") == 0) {
+		final->Opcode = calloc(10, sizeof(char));
+		strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
+		final->rdName = NULL;
+		final->rsName = calloc(10, sizeof(char));
+		final->rtName = calloc(10, sizeof(char));
+		final->IMM = calloc(110, sizeof(char));
+		pos = strtok(NULL, " ,\t()");
+		strcpy(final->rtName, pos);
+		pos = strtok(NULL, " ,\t()");
+		char* label = 	calloc(10, sizeof(char));
+		strcpy(label, pos);
+		pos = strtok(NULL, " ,\t()");
+		if (pos != NULL) {
+			strcpy(final->rsName, pos);
+			strcpy(final->IMM, helper(16, atoi(label)));
 		}
-	// Handle the mult instruction
-	// Format: MULT rs, rt
+		else{
+			strcpy(final->rsName, "$zero");
+		  FILE* input = fopen("symbol.txt", "r");
+			char line[100];
+		  while (fgets(line, 100, input) != NULL) {
+				if (strstr(line, label) != NULL) {
+					char* label = strtok(line, ":  ");
+			 		strcpy(final->IMM, helper(16, (int)strtol(label, NULL, 0)));
+			 		break;
+			 	}
+			}
+			fclose(input);
+			free(label);
+		}
+		final->RS = calloc(10, sizeof(char));
+		strcpy(final->RS, RegistersHelper(final->rsName)->currReg);
+		final->RT = calloc(10, sizeof(char));
+		strcpy(final->RT, RegistersHelper(final->rtName)->currReg);
+		}
+		// Handle the mult instruction
+		// Format: MULT rs, rt
 	else if (strcmp(final->Mnemonic, "mult") == 0){
 		// Find the opcode
 		final->Opcode = (char*) calloc(10, sizeof(char*));
@@ -392,25 +411,25 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 		}
 		else if (strcmp(final->Mnemonic, "sll") == 0 ||
 		 strcmp(final->Mnemonic, "sra") == 0) {
-			 final->Opcode = calloc(7, sizeof(char));
+			 final->Opcode = calloc(10, sizeof(char));
 			 strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
-		final->rdName = calloc(7, sizeof(char));
+		final->rdName = calloc(10, sizeof(char));
 		pos = strtok(NULL, " ,\t()");
 		strcpy(final->rdName, pos);
-		final->rtName = calloc(7, sizeof(char));
+		final->rtName = calloc(10, sizeof(char));
 		pos = strtok(NULL, " ,\t()");
 		strcpy(final->rtName, pos);
 
-		final->Funct = calloc(7, sizeof(char));
-		final->RD = calloc(6, sizeof(char));
-		final->RS = calloc(6, sizeof(char));
-		final->RT = calloc(6, sizeof(char));
+		final->Funct = calloc(10, sizeof(char));
+		final->RD = calloc(10, sizeof(char));
+		final->RS = calloc(10, sizeof(char));
+		final->RT = calloc(10, sizeof(char));
 
 		strcpy(final->Funct, FuncHelper(final->Mnemonic)->func);
 		strcpy(final->RD, RegistersHelper(final->rdName)->currReg);
 		strcpy(final->RS, "00000");
 		strcpy(final->RT, RegistersHelper(final->rtName)->currReg);
-		final->Shift = calloc(6, sizeof(char));
+		final->Shift = calloc(10, sizeof(char));
 		pos = strtok(NULL, " ,\t()");
 		int number = atoi(pos);
 		char* f = helper(5, number);
@@ -418,9 +437,9 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 		free(f);
 	}
 	else if (strcmp(final->Mnemonic, "j") == 0) {
-			final->Opcode = calloc(7, sizeof(char));
+			final->Opcode = calloc(10, sizeof(char));
 			strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
-			final->IMM = calloc(27, sizeof(char));
+			final->IMM = calloc(210, sizeof(char));
 			pos = strtok(NULL, " ,\t()");
 			FILE* input = fopen("symbol.txt", "r");
 			char line[100];
@@ -438,16 +457,16 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 		}
 		else if (strcmp(final->Mnemonic, "blez") == 0 ||
 						 strcmp(final->Mnemonic, "bgtz") == 0) {
-			final->Opcode = calloc(7, sizeof(char));
+			final->Opcode = calloc(10, sizeof(char));
 			strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
-			final->rsName = calloc(7, sizeof(char));
+			final->rsName = calloc(10, sizeof(char));
 			pos = strtok(NULL, " ,\t()");
 			strcpy(final->rsName, pos);
-			final->RS = calloc(6, sizeof(char));
+			final->RS = calloc(10, sizeof(char));
 			strcpy(final->RS, RegistersHelper(final->rsName)->currReg);
-			final->RT = calloc(6, sizeof(char));
+			final->RT = calloc(10, sizeof(char));
 			strcpy(final->RT, "00000");
-			final->IMM = calloc(17, sizeof(char));
+			final->IMM = calloc(110, sizeof(char));
 			pos = strtok(NULL, " ,\t()");
 			FILE* input = fopen("symbol.txt", "r");
 			char line[100];
