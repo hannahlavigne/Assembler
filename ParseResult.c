@@ -54,7 +54,7 @@ void clearResult(ParseResult* const pPR) {
  *         pPR points to a proper ParseResult object.
  */
 void printResult(FILE* Log, const ParseResult* const pPR) {
-  
+
   // Prints out syscall instruction
   if (strcmp(pPR->Mnemonic, "syscall") == 0) {
     fprintf(Log, pPR->Opcode);
@@ -85,10 +85,11 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
    }
    else if (strcmp(pPR->Mnemonic, "move") == 0){
      fprintf(Log, pPR->Opcode);
-     fprintf(Log, pPR->RS);
+     fprintf(Log, "00000");
      fprintf(Log, pPR->RT);
-     fprintf(Log, pPR->IMM);
-     fprintf(Log, "1111111111110101");
+     fprintf(Log, pPR->RD);
+     fprintf(Log, "00000");
+     fprintf(Log, pPR->Funct);
      fprintf(Log, "move");
    }
    // Prints out lw, lui, addi, slti,

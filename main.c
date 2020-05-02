@@ -221,9 +221,11 @@ int main(int numArgs, char** args) {
 							pos = strtok(NULL, " .\t:,");
 						}
 						while (pos != NULL) {
-							fprintf(out, helper(32, atoi(pos)));
+							char* help = helper(32, atoi(pos));
+							fprintf(out, help);
 							fprintf(out, "\n");
 							pos = strtok(NULL, " .\t:,");
+							free(help);
 						}
 					}
 				}
