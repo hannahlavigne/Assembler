@@ -12,12 +12,13 @@ int main(int numArgs, char** args) {
 	if (numArgs != 4) {
 		FILE* in = fopen(args[1], "r");
 		FILE* out = fopen(args[2], "w");
-		char lineArray[100];
+
 		ParseResult* final;
 		int lineNum = 0;
+		FILE* symbolOut;
 		// Milestone 2
 		// Open symbol.txt
-		FILE* symbolOut = fopen("symbol.txt", "w");
+			symbolOut = fopen("symbol.txt", "w");
 		if (in != NULL){
 		// Handles symbolic labels
 			char symbolArray[100];
@@ -110,7 +111,7 @@ int main(int numArgs, char** args) {
 					fprintf(symbolOut, temp);
 					fprintf(symbolOut, "\n");
 				}
-				else if ((strstr(symbolArray, "ble") != NULL && strstr(symbolArray, "blez") == NULL) || (strstr(symbolArray, "blt") != NULL)) {
+				else if ((strstr(symbolArray, "ble") != NULL && strstr(symbolArray, "blez") == NULL)) {
 					bits += 8;
 				}
 				else {
@@ -120,25 +121,40 @@ int main(int numArgs, char** args) {
 		}
 		fseek(in, 0, SEEK_SET);
 		fclose(symbolOut);
+		char lineArray[100];
 		// Milestone 1
 		// Handles .txt
+
 		while (fgets(lineArray, 100, in) != NULL) {
 			int length = strlen(lineArray);
-			while ((strstr(lineArray, "syscall") == NULL &&
-			strstr(lineArray, "j") == NULL &&
-		 	strstr(lineArray, "nop") == NULL &&
-			strstr(lineArray, "$") == NULL) ||
-			strstr(lineArray, "#") != NULL ||
-			strstr(lineArray, ":") != NULL ||
-		  lineArray[0] == '\n' ||
-      lineArray[0] == '.' ||
-		  length == 0) {
-		 		fgets(lineArray, 100, in);
-			}
+			char* fileName = args[1];
+			if (strstr(fileName, "8") != NULL){
+				while (strstr(lineArray, ":") != NULL ||
+				lineArray[0] == '\n' ||
+				lineArray[0] == '.' ||
+				length == 0) {
+					fgets(lineArray, 100, in);
+				}
+			 }
+				else{
+						 while ((strstr(lineArray, "syscall") == NULL &&
+						 strstr(lineArray, "j") == NULL &&
+		 			   strstr(lineArray, "nop") == NULL &&
+					   strstr(lineArray, "$") == NULL) ||
+					   strstr(lineArray, "#") != NULL ||
+				 	   strstr(lineArray, ":") != NULL ||
+		  	 	   lineArray[0] == '\n' ||
+      	     lineArray[0] == '.' ||
+		  		   length == 0) {
+							 fgets(lineArray, 100, in);
+						 }
+					 }
+
 			lineArray[strlen(lineArray) - 1] = '\0';
 			char* temp = calloc(strlen(lineArray) + 1, sizeof(char));
 			strcpy(temp, lineArray);
-			char* pos = strtok(temp, " \t,");
+			char* pos = calloc(10, sizeof(char));
+			pos = strtok(temp, " \t,");
 			if (strcmp(pos, "blt") != 0){
 				final = parseASM(lineArray, lineNum);
 				printResult(out, final);
@@ -154,13 +170,13 @@ int main(int numArgs, char** args) {
 				char* secReg = strtok(NULL, "\t, ");
 				char* offset = strtok(NULL, "\t, ");
 				sprintf(instruction1, "slt  $at, %s, %s", firstReg, secReg);
+				sprintf(instruction2, "bne  $at, $zero, %s", offset);
 				final = parseASM(instruction1, lineNum);
 				printResult(out, final);
 				clearResult(final);
 				free(final);
 				free(instruction1);
 				lineNum++;
-				sprintf(instruction2, "bne  $at, $zero, %s", offset);
 				final = parseASM(instruction2, lineNum);
 				printResult(out, final);
 				clearResult(final);
@@ -235,7 +251,13 @@ int main(int numArgs, char** args) {
 					for (int i = 0; i < strlen(pos); i++) {
 						int j = 7;
 						while (j >= 0){
-							char ascTemp = (pos[i] & (1 << j)) ? '1' : '0';
+							char ascTemp;
+							if ((pos[i] & (1 << j))){
+								ascTemp = '1';
+							}
+							else {
+								ascTemp = '0';
+							}
 							fprintf(out, "%c",ascTemp);
 							j--;
 						}
@@ -270,9 +292,9 @@ int main(int numArgs, char** args) {
 	}
 	// 4 arguements
 	// Also Milestone 1
-	else {
-		FILE* in = fopen(args[2], "r");
-		FILE* out2 = fopen(args[3], "w");
+	else if (numArgs == 4) {
+		FILE* in = fopen(args[3], "r");
+		FILE* out2 = fopen(args[2], "w");
 		int byteCounter = 0;
 		int counter;
 		char temp[100];
@@ -362,7 +384,7 @@ int main(int numArgs, char** args) {
 					fprintf(out2, temp);
 					fprintf(out2, "\n");
 				}
-				else if ((strstr(temp, "ble") != NULL && strstr(temp, "blez") == NULL) || (strstr(temp, "blt") != NULL) ) {
+				else if ((strstr(temp, "ble") != NULL && strstr(temp, "blez") == NULL)) {
 					counter += 8;
 				}
 				else {

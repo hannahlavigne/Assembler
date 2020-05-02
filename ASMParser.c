@@ -68,34 +68,26 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 				final->IMM = NULL;
 		}
 		else if (strcmp(final->Mnemonic, "move") == 0){
-			// Get opcode
-			final->Opcode = calloc(10, sizeof(char));
+			// Find the opcode
+			final->Opcode = (char*) calloc(10, sizeof(char*));
 			strcpy(final->Opcode, OpcodeHelper(final->Mnemonic)->opcode);
-			// Find the rs register info
-			final->rsName = calloc(10, sizeof(char));
-			pos = strtok(NULL, " ,\t()");
+			pos = strtok (NULL, " ,\t()");
+			// Find the RD register info
+			final->rdName = (char*) calloc(10, sizeof(char*));
+			strcpy(final->rdName, pos);
+			final->rd = RegistersHelper(final->rdName)->regNum;
+			final->RD = (char*) calloc(10, sizeof(char*));
+			strcpy(final->RD, RegistersHelper(final->rdName)->currReg);
+			pos = strtok (NULL, " ,\t()");
+			// Find the RS register info
+			final->rsName = (char*) calloc(10, sizeof(char*));
 			strcpy(final->rsName, pos);
-			final->RS = calloc(10, sizeof(char));
+			final->rs = RegistersHelper(final->rsName)->regNum;
+			final->RS = (char*) calloc(10, sizeof(char*));
 			strcpy(final->RS, RegistersHelper(final->rsName)->currReg);
-			// Find the RT register info
-			final->RT = calloc(10, sizeof(char));
-			strcpy(final->RT, "00000");
-			// Find IMM info
-			final->IMM = calloc(110, sizeof(char));
-			pos = strtok(NULL, " ,\t()");
-			FILE* symbol = fopen("symbol.txt", "r");
-			char temp[100];
-			while(fgets(temp, 100, symbol) != NULL) {
-				if (strstr(temp, pos) != NULL) {
-					char* tempPos = strtok(temp, ":  ");
-					int tempNum = (int)strtol(tempPos, NULL, 0);
-					int jump = (((int)strtol(tempPos, NULL, 0))/ 4) - currLine - 1;
-					char* help = helper(16, jump);
-					strcpy(final->IMM, help);
-					free(help);
-				}
-			}
-			fclose(symbol);
+			// Find the Funct info
+			final->Funct = (char*) calloc(10, sizeof(char*));
+			strcpy(final->Funct, FuncHelper(final->Mnemonic)->func);
 		}
 
 	// Handle the addi instruction
@@ -416,7 +408,8 @@ ParseResult* parseASM(const char* const pASM, int currLine) {
 			while (fgets(symbolTemp, 100, symbol) != NULL) {
 				if (strstr(symbolTemp, pos) != NULL) {
 					char* tempPos = strtok(symbolTemp, "  ");
-					int jump = (((int)strtol(tempPos, NULL, 0)) / 4) - currLine - 1;
+					int tempint = (int)strtol(tempPos, NULL, 0);
+					int jump = (tempint / 4) - currLine - 1;
 					char* help = helper(16, jump);
 					strcpy(final->IMM, help);
 					free(help);

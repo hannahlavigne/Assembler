@@ -1,6 +1,6 @@
 #include "funcHelp.h"
 
-#define   NUMFUNC 11
+#define   NUMFUNC 12
 
 //Helper for function code
 static FuncCode FuncCodeTable[NUMFUNC] = {
@@ -14,11 +14,12 @@ static FuncCode FuncCodeTable[NUMFUNC] = {
   {"000000", "sll"},
   {"101010", "slt"},
   {"000011", "sra"},
-  {"000111", "srav"}
+  {"000111", "srav"},
+  {"100001", "move"}
 };
 
 const FuncCode* FuncHelper( const char* const func){
-  for (int i = 0; i < 11; i++) {
+  for (int i = 0; i < 12; i++) {
 		if (strcmp(func, FuncCodeTable[i].funcName) == 0) {
 			return &FuncCodeTable[i];
 		}

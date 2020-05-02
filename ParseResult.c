@@ -86,11 +86,10 @@ void printResult(FILE* Log, const ParseResult* const pPR) {
    else if (strcmp(pPR->Mnemonic, "move") == 0){
      fprintf(Log, pPR->Opcode);
      fprintf(Log, "00000");
-     fprintf(Log, pPR->RT);
+     fprintf(Log, pPR->RS);
      fprintf(Log, pPR->RD);
      fprintf(Log, "00000");
      fprintf(Log, pPR->Funct);
-     fprintf(Log, "move");
    }
    // Prints out lw, lui, addi, slti,
    // la, beq, bne, sw, addiu, blez,
