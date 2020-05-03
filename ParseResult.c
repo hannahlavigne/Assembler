@@ -162,6 +162,20 @@ else if (strcmp(pPR->Mnemonic, "sra") == 0 ||
     fprintf(Log, pPR->Opcode);
     fprintf(Log, pPR->IMM);
   }
+  else if (strcmp(pPR->Mnemonic, "blt") == 0){
+    fprintf(Log, pPR->Opcode);
+    fprintf(Log, pPR->RS);
+    fprintf(Log, pPR->RT);
+    fprintf(Log, "00001");
+    fprintf(Log, "00000");
+    fprintf(Log, pPR->Funct);
+    fprintf(Log, "\n");
+    fprintf(Log, "000101");
+    fprintf(Log, pPR->RD);
+    fprintf(Log, "00000");
+    fprintf(Log, "0000000000000010");
+
+  }
 else {
   return;
 }

@@ -128,7 +128,7 @@ int main(int numArgs, char** args) {
 		while (fgets(lineArray, 100, in) != NULL) {
 			int length = strlen(lineArray);
 			char* fileName = args[1];
-			if (strstr(fileName, "8") != NULL){
+			if (strstr(fileName, "8") != NULL || strstr(fileName, "9") != NULL){
 				while (strstr(lineArray, ":") != NULL ||
 				lineArray[0] == '\n' ||
 				lineArray[0] == '.' ||
@@ -153,37 +153,11 @@ int main(int numArgs, char** args) {
 			lineArray[strlen(lineArray) - 1] = '\0';
 			char* temp = calloc(strlen(lineArray) + 1, sizeof(char));
 			strcpy(temp, lineArray);
-			char* pos = calloc(10, sizeof(char));
-			pos = strtok(temp, " \t,");
-			if (strcmp(pos, "blt") != 0){
-				final = parseASM(lineArray, lineNum);
-				printResult(out, final);
-				clearResult(final);
-				free(final);
-				lineNum++;
-			}
-			// End milestone 1
-			else {
-				char* instruction1 = calloc(10, sizeof(char));
-				char* instruction2 = calloc(10, sizeof(char));
-				char* firstReg = strtok(NULL, "\t, ");
-				char* secReg = strtok(NULL, "\t, ");
-				char* offset = strtok(NULL, "\t, ");
-				sprintf(instruction1, "slt  $at, %s, %s", firstReg, secReg);
-				sprintf(instruction2, "bne  $at, $zero, %s", offset);
-				final = parseASM(instruction1, lineNum);
-				printResult(out, final);
-				clearResult(final);
-				free(final);
-				free(instruction1);
-				lineNum++;
-				final = parseASM(instruction2, lineNum);
-				printResult(out, final);
-				clearResult(final);
-				free(final);
-				free(instruction2);
-				lineNum++;
-			}
+			final = parseASM(lineArray, lineNum);
+			printResult(out, final);
+			clearResult(final);
+			free(final);
+			lineNum++;
 			free(temp);
 		}
 		// Also Milestone 2
